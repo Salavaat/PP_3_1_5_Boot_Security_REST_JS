@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package ru.kata.spring.boot_security.demo.model;
 
 import javax.persistence.Column;
