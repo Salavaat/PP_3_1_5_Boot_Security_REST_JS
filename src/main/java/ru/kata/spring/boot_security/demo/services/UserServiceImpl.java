@@ -26,8 +26,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -57,8 +57,9 @@ public class UserServiceImpl implements UserService {
         if (optionalUser.isPresent()) {
             User editUser = optionalUser.get();
             editUser.setId(user.getId());
-            editUser.setUsername(user.getUsername());
+            editUser.setFirstName(user.getFirstName());
             editUser.setLastName(user.getLastName());
+            editUser.setAge(user.getAge());
             editUser.setEmail(user.getEmail());
             editUser.setRoles(user.getRoles());
             if (!editUser.getPassword().equals(user.getPassword())) {

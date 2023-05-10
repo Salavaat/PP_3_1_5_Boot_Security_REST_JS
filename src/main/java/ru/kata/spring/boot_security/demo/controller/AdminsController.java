@@ -6,8 +6,8 @@ import org.springframework.ui.Model;
 
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.services.RoleServiceImpl;
-import ru.kata.spring.boot_security.demo.services.UserServiceImpl;
+import ru.kata.spring.boot_security.demo.services.RoleService;
+import ru.kata.spring.boot_security.demo.services.UserService;
 
 import java.security.Principal;
 
@@ -16,40 +16,28 @@ import java.security.Principal;
 @RequestMapping("/admin")
 public class AdminsController {
 
-    private final UserServiceImpl userService;
-    private final RoleServiceImpl roleService;
+    private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
-    public AdminsController(UserServiceImpl userService, RoleServiceImpl roleService) {
+    public AdminsController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
 
     @GetMapping()
     public String showAllUsers(Model model, Principal principal) {
+        model.addAttribute("user", userService.findByEmail(principal.getName()));
         model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("roles", roleService.getListRoles());
+        model.addAttribute("newUser", new User());
         return "admin";
-    }
-
-
-    @GetMapping("/edit/{id}")
-    public String updateUserForm(@PathVariable Long id, Model model, Model roles) {
-        roles.addAttribute("listRoles", roleService.getListRoles());
-        model.addAttribute("user", userService.findUserById(id).get());
-        return "edit";
     }
 
     @PatchMapping("/edit/{id}")
     public String updateUser(@ModelAttribute("user") User user, @PathVariable("id") Long id) {
         userService.updateUser(id, user);
         return "redirect:/admin";
-    }
-
-
-    @GetMapping("/new")
-    public String NewUser(@ModelAttribute("user") User user, Model model) {
-        model.addAttribute("listRoles", roleService.getListRoles());
-        return "new";
     }
 
 

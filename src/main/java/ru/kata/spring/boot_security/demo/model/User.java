@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -18,7 +19,7 @@ public class User implements UserDetails {
 
 
     @Column(name = "username")
-    private String username;
+    private String firstName;
 
 
     @Column(name = "last_name")
@@ -26,6 +27,9 @@ public class User implements UserDetails {
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "age")
+    private Integer age;
 
     @Column(name = "email")
     private String email;
@@ -39,11 +43,12 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(Long id, String username, String lastName, String password, String email) {
+    public User(Long id, String firstName, String lastName, Integer age, String password, String email) {
         this.id = id;
-        this.username = username;
+        this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
+        this.age = age;
         this.email = email;
     }
 
@@ -57,12 +62,24 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 
     public String getLastName() {
@@ -73,11 +90,11 @@ public class User implements UserDetails {
         this.lastName = lastName;
     }
 
-
     @Override
     public String getPassword() {
         return password;
     }
+
 
     public void setPassword(String password) {
         this.password = password;
@@ -105,9 +122,10 @@ public class User implements UserDetails {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", firstName='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", password='" + password + '\'' +
+                ", age='" + age + '\'' +
                 ", email='" + email + '}';
     }
 
@@ -136,4 +154,16 @@ public class User implements UserDetails {
         return getRoles();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(password, user.password) && Objects.equals(age, user.age) && Objects.equals(email, user.email) && Objects.equals(roles, user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, password, age, email, roles);
+    }
 }

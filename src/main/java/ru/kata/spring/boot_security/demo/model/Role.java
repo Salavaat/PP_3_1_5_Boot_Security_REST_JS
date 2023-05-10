@@ -3,6 +3,7 @@ package ru.kata.spring.boot_security.demo.model;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "roles")
@@ -15,6 +16,9 @@ public class Role implements GrantedAuthority {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "value")
+    private String value;
+
     public Role() {
     }
 
@@ -22,9 +26,10 @@ public class Role implements GrantedAuthority {
         this.id = id;
     }
 
-    public Role(Long id, String name) {
+    public Role(Long id, String name, String value) {
         this.id = id;
         this.name = name;
+        this.value = value;
     }
 
     public Long getId() {
@@ -43,6 +48,15 @@ public class Role implements GrantedAuthority {
         this.name = name;
     }
 
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     @Override
     public String getAuthority() {
         return getName();
@@ -53,4 +67,17 @@ public class Role implements GrantedAuthority {
         return this.name;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return Objects.equals(id, role.id) && Objects.equals(name, role.name) && Objects.equals(value, role.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, value);
+    }
 }
