@@ -40,18 +40,21 @@ public class AdminsRESTController {
         return ResponseEntity.ok(roleList);
     }
 
-
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(userService.findUserById(id).get());
+    }
 
     @PostMapping("/create")
     public ResponseEntity<User> create(@RequestBody User user) {
         userService.saveUser(user);
-        return new ResponseEntity<>(user,HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PatchMapping("/edit")
+    @PatchMapping()
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         userService.saveUser(user);
-        return new ResponseEntity<>(user,HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
 

@@ -11,18 +11,38 @@ fetch(url1)
                                 <td>${data.age}</td>
                                 <td>${data.email}</td>
                                 <td>${data.roles.map(role => " " + role.name.substring(5))}</td>
-              
+
 `;
     })
 
 
-const url2 = 'http://localhost:8080/api/admin/'
-const update_url = 'http://localhost:8080/api/edit/'
+const url2 = 'http://localhost:8080/api/admin'
+const update_url = 'http://localhost:8080/api/admin/'
 const delete_url = 'http://localhost:8080/api/admin/'
-const add_url = 'http://localhost:8080/api/admin/create'
+const add_url = 'http://localhost:8080/api/admin/create/'
 
-const addUserForm = document.querySelector('#addUser')
-const editUserForm = document.querySelector('#modalEdit')
+
+
+async function getUserById(id) {
+    let urlForOneUser = update_url + id;
+    return await (await fetch(urlForOneUser)).json();
+}
+
+
+async function getAllRoles(selectRole) {
+    fetch("http://localhost:8080/api/admin/roles")
+        .then(result => result.json())
+        .then(data => {
+            let temp = "";
+            data.forEach(role =>
+            {
+                temp += `<option value="${role.id}">${role.name.slice(5)}</option>`;
+            });
+            selectRole.append(temp);
+        });
+}
+
+
 const deleteUserForm = document.querySelector('#modalDelete')
 let currentUserId = null
 
@@ -64,95 +84,131 @@ function refreshTable() {
     setTimeout(getAllUsers, 500);
 }
 
-///////////ADD/////////////////////
-const addFirstName = document.getElementById('firstname1')
-const addLastName = document.getElementById('lastname1')
-const addAge = document.getElementById('age1')
-const addPassword = document.getElementById('password1')
-const addEmail = document.getElementById('email1')
-const addRoles = document.getElementById('roles1')
+//-----------------ADD---------------------------//
 
-const on = (element, event, selector, handler) => {
+
+
+const createTab = document.getElementById('create');
+
+const firstnameAdd = document.getElementById('firstname1');
+const lastnameAdd = document.getElementById('lastname1');
+const ageAdd = document.getElementById('age1');
+const emailAdd = document.getElementById('email1');
+const passwordAdd = document.getElementById('password1');
+const rolesAdd = document.getElementById('chooseRole');
+const selectRoleInCreate = $('#chooseRole');
+getAllRoles(selectRoleInCreate);
+
+createTab.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    fetch(add_url, {
+        method: "POST",
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify(
+            {
+                firstName: firstnameAdd.value,
+                lastName: lastnameAdd.value,
+                age: ageAdd.value,
+                email: emailAdd.value,
+                password: passwordAdd.value,
+                roles: getSelectedRole(rolesAdd)
+            }
+        )
+    }).then(() => {
+        createTab.reset();
+        $('#allUsersTab').click();
+        getAllUsers()
+        $('[href="#UsersTable"]').click()
+    })
+        .catch(error => console.log(error));
+});
+
+
+function getSelectedRole(selectTag) {
+    let roles = [];
+    for (let i = 0; i < selectTag.options.length; i++) {
+        if (selectTag.options[i].selected) roles.push({
+            id: selectTag.options[i].value,
+            roleName: "ROLE_" + selectTag.options[i].text
+        });
+    }
+    return roles;
+}
+
+
+//---------------EDIT---------------------------//
+
+
+const modalEdit = new bootstrap.Modal(document.querySelector('#modalEdit'));
+const editUserForm = document.forms["editUserForm"];
+
+const idEdit = document.getElementById('id2');
+const firstnameEdit = document.getElementById('firstname2');
+const lastnameEdit = document.getElementById('lastname2');
+const ageEdit = document.getElementById('age2');
+const emailEdit = document.getElementById('email2');
+const passwordEdit = document.getElementById('password2');
+const rolesEdit = document.getElementById('rolesEditUserForm');
+const selectRoleInEdit = $('#rolesEditUserForm');
+
+on = (element, event, selector, handler) => {
     element.addEventListener(event, e => {
         if (e.target.closest(selector)) {
-            handler(e)
+            handler(e);
         }
     })
 }
 
-addUserForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-
-    fetch(add_url,{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            firstname: addFirstName.value,
-            lastname: addLastName.value,
-            age: addAge.value,
-            email: addEmail.value,
-            password: addPassword.value,
-            roles: [
-                addRoles.value
-            ]
-        })
-    })
-        .then(res => res.json())
-        .then(data => {
-            users = data;
-            getAllUsers(users);
-        })
-        .then(res => {
-            document.getElementById('add_new_user').click()
-        })
-    refreshTable()
-});
-
-//////////// EDIT////////////////
-
+let rowId = 0;
 on(document, 'click', '#edit-user', e => {
-    const userInfo = e.target.parentNode.parentNode
-    document.getElementById('id2').value = userInfo.children[0].innerHTML
-    document.getElementById('firstname2').value = userInfo.children[1].innerHTML
-    document.getElementById('lastname2').value = userInfo.children[2].innerHTML
-    document.getElementById('age2').value = userInfo.children[3].innerHTML
-    document.getElementById('email2').value = userInfo.children[4].innerHTML
-    document.getElementById('password2').value = userInfo.children[5].innerHTML
-    document.getElementById('roles2').value = userInfo.children[6].innerHTML
-    $("#modalEdit").modal("show")
-
-})
-
+        const row = e.target.parentNode.parentNode;
+        rowId = row.firstElementChild.innerHTML
+        getUserById(rowId).then(data =>{
+            idEdit.value = data.id;
+            firstnameEdit.value = data.firstName;
+            lastnameEdit.value = data.lastName;
+            ageEdit.value = data.age;
+            emailEdit.value = data.email;
+            passwordEdit.value = '';
+            getAllRoles(selectRoleInEdit);
+            modalEdit.show();
+        });
+    }
+);
 
 editUserForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    fetch(update_url,{
-        method: 'PATCH',
+    fetch(update_url, {
+        method: "PATCH",
         headers: {
-            'Content-Type': 'application/json'
+            'content-type': 'application/json'
         },
-        body: JSON.stringify({
-            id: document.getElementById('id2').value,
-            firstname: document.getElementById('firstname2').value,
-            lastname: document.getElementById('lastname2').value,
-            age: document.getElementById('age2').value,
-            email: document.getElementById("email2").value,
-            password: document.getElementById('password2').value,
-            roles: [
-                document.getElementById('roles2').value
-            ]
-        })
-    }).then()
+        body: JSON.stringify(
+            {
+                id: editUserForm.value,
+                firstName: firstnameEdit.value,
+                lastName: firstnameEdit.value,
+                age: ageEdit.value,
+                email: emailEdit.value,
+                password: passwordEdit.value,
+                roles: getSelectedRole(rolesEdit)
+            }
+        )
+    }).then(() => {
+        $('#closeButtonEditForm').click();
+        getAllUsers()
+    })
+        .catch(error => console.log(error));
+});
 
-    $("#modalEdit").modal("hide")
-    refreshTable()
-})
 
-/////DELETE//////////
+
+//-------------------DELETE---------------------------//
+
 
 deleteUserForm.addEventListener('submit', (e) => {
     console.log(e.target.parentNode.parentNode)

@@ -97,7 +97,7 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.password;
+        return password;
     }
 
     public void setPassword(String password) {
@@ -116,6 +116,12 @@ public class User implements UserDetails {
         return this.roles;
     }
 
+    public String rolesToString() {
+        String role = "";
+        for (Role r : roles)
+            role = role + " " + r.toString();
+        return role;
+    }
 
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;

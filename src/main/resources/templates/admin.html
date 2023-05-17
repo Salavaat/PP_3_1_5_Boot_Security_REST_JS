@@ -21,8 +21,7 @@
     <a class="navbar-brand ">
         <b> <span th:text="${user.email}"></span> </b>
         <span>with roles:</span>
-        <span th:each="role :${user.getRoles()}">
-            <span th:text="${role.getValue()}"></span>
+        <span th:text="${user.rolesToString()}">
         </span>
     </a>
 
@@ -63,7 +62,7 @@
                                 table</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#addUser" data-toggle="tab">New User</a>
+                            <a class="nav-link" href="#addNewUser" data-toggle="tab">New User</a>
                         </li>
                     </ul>
 
@@ -96,10 +95,10 @@
 
                         <!--вкладка добавления юзера ADD-->
 
-                        <div class="tab-pane fade show" id="addUser">
+                        <div class="tab-pane fade show" id="addNewUser">
                             <h5 class="card-header">Add new user</h5>
                             <div class="col-md border" style="background-color: white">
-                                <form align="center" class="offset-md-4 col-md-3 mt-4 mb-4" th:align="center">
+                                <form id="create" align="center" class="offset-md-4 col-md-3 mt-4 mb-4" th:align="center">
                                     <label for="firstname1" class="col-form-label"><b>First name</b></label>
                                     <input th:type="text" class="form-control" id="firstname1" placeholder="First name" required minlength="2" maxlength="15" th:name="firstname"/>
                                     <label for="lastname1" class="col-form-label"><b>Last name</b></label>
@@ -110,12 +109,10 @@
                                     <input th:type="email" class="form-control" id="email1" placeholder="Email" required th:name="email"/>
                                     <label for="password1" class="col-form-label"><b>Password</b></label>
                                     <input th:type="password" class="form-control" id="password1"  placeholder="Password" required minlength="3" maxlength="15" th:name="password"/>
-                                    <label for="roles1"><b>Role</b></label>
+                                    <label for="chooseRole"><b>Role</b></label>
                                     <select multiple class="form-control form-control-sm"
-                                            id="roles1" size="2" required>
-                                        <div th:each="role:${roles}">
-                                            <option id="adminSelect1" th:value="*{role.getId()}" th:text="*{role.getAuthority().replace('ROLE_','')}"></option>
-                                        </div>
+                                            id="chooseRole"  size="2" required>
+
                                     </select>
                                     <br>
                                     <button th:type="submit" class="btn btn-success" value="Add new user" id="add">Add new user
@@ -135,30 +132,29 @@
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    <form>
+                                    <form id="editUserForm">
                                         <div class="modal-body text-center">
                                             <label for="id2" class="col-form-label"><b>ID</b></label>
                                             <input th:type="text" class="form-control" id="id2" th:name="id" disabled>
                                             <label for="firstname2" class="col-form-label"><b>First name</b></label>
-                                            <input th:type="text" class="form-control" id="firstname2" required minlength="2" maxlength="15" th:name="firstname"/>
+                                            <input th:type="text" class="form-control" id="firstname2" required minlength="2" maxlength="15" th:name="firstName"/>
                                             <label for="lastname2" class="col-form-label"><b>Last name</b></label>
-                                            <input th:type="text" class="form-control" id="lastname2" required minlength="2" maxlength="15" th:name="lastname"/>
+                                            <input th:type="text" class="form-control" id="lastname2" required minlength="2" maxlength="15" th:name="lastName"/>
                                             <label for="age2" class="col-form-label"><b>Age</b></label>
                                             <input th:type="number" class="form-control" id="age2" required minlength="1" maxlength="150" th:name="age"/>
                                             <label for="email2" class="col-form-label"><b>Email</b></label>
                                             <input th:type="email" class="form-control" id="email2" required th:name="email"/>
                                             <label for="password2" class="col-form-label"><b>Password</b></label>
                                             <input th:type="password" class="form-control" id="password2" required minlength="3" maxlength="15" th:name="password"/>
-                                            <label for="roles2"><b>Role</b></label>
+                                            <label for="rolesEditUserForm"><b>Role</b></label>
                                             <select multiple class="form-control form-control-sm"
-                                                    id="roles2" size="2" required>
-                                                <div th:each="role:${roles}">
-                                                    <option id="adminSelect2" th:value="*{role.getId()}" th:text="*{role.getAuthority().replace('ROLE_','')}"></option>
-                                                </div>
+                                                    id="rolesEditUserForm" size="2" required name="role">
+
+
                                             </select>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button id="closeButtonEditForm" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                             <button type="submit" class="btn btn-primary">Edit</button>
                                         </div>
                                     </form>

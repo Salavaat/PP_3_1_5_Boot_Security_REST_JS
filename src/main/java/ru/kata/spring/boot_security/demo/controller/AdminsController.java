@@ -32,23 +32,4 @@ public class AdminsController {
         model.addAttribute("newUser", new User());
         return "admin";
     }
-
-
-//    @PatchMapping({"/edit/{id}"})
-//    public String updateUser(@ModelAttribute("user") User user, @PathVariable("id") Long id) {
-//        this.userService.updateUser(id, user);
-//        return "redirect:/admin";
-//    }
-//
-//    @PostMapping
-//    public String create(@ModelAttribute("user") User user) {
-//        this.userService.saveUser(user);
-//        return "redirect:/admin";
-//    }
-//
-//    @DeleteMapping({"/{id}"})
-//    public String delete(@PathVariable("id") Long id) {
-//        this.userService.delete(id);
-//        return "redirect:/admin";
-//    }
 }

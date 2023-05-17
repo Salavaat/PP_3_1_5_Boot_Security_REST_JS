@@ -7,7 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Objects;
@@ -21,8 +22,8 @@ public class Role implements GrantedAuthority {
     private Long id;
     @Column(name = "name")
     private String name;
-    @Column(name = "value")
-    private String value;
+//    @Column(name = "value")
+//    private String value;
 
     public Role() {
     }
@@ -31,10 +32,10 @@ public class Role implements GrantedAuthority {
         this.id = id;
     }
 
-    public Role(Long id, String name, String value) {
+    @JsonCreator
+    public Role(@JsonProperty("id") Long id,@JsonProperty("name") String name) {
         this.id = id;
         this.name = name;
-        this.value = value;
     }
 
     public Long getId() {
@@ -53,21 +54,15 @@ public class Role implements GrantedAuthority {
         this.name = name;
     }
 
-    public String getValue() {
-        return this.value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
 
     @Override
     public String getAuthority() {
         return this.getName();
     }
 
+    @Override
     public String toString() {
-        return this.name;
+        return this.name.substring(5, name.length());
     }
 
     @Override
@@ -75,11 +70,11 @@ public class Role implements GrantedAuthority {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Role role = (Role) o;
-        return Objects.equals(id, role.id) && Objects.equals(name, role.name) && Objects.equals(value, role.value);
+        return Objects.equals(id, role.id) && Objects.equals(name, role.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, value);
+        return Objects.hash(id, name);
     }
 }
