@@ -13,13 +13,12 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-@Table(
-        name = "users"
-)
+@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,6 +66,7 @@ public class User implements UserDetails {
         this.id = id;
     }
 
+    @Override
     public String getUsername() {
         return this.email;
     }
@@ -95,6 +95,7 @@ public class User implements UserDetails {
         this.lastName = lastName;
     }
 
+    @Override
     public String getPassword() {
         return this.password;
     }
@@ -115,6 +116,7 @@ public class User implements UserDetails {
         return this.roles;
     }
 
+
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;
     }
@@ -129,22 +131,34 @@ public class User implements UserDetails {
 
     }
 
+    @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+
+    @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }
 
+
+    @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.getRoles();
     }

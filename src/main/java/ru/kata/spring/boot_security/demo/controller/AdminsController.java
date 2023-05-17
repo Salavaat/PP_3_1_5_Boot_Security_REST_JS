@@ -13,7 +13,7 @@ import java.security.Principal;
 
 
 @Controller
-@RequestMapping({"/admin"})
+@RequestMapping("/admin")
 public class AdminsController {
     private final UserService userService;
     private final RoleService roleService;
@@ -24,7 +24,7 @@ public class AdminsController {
         this.roleService = roleService;
     }
 
-    @GetMapping
+    @GetMapping()
     public String showAllUsers(Model model, Principal principal) {
         model.addAttribute("user", this.userService.findByEmail(principal.getName()));
         model.addAttribute("users", this.userService.getAllUsers());
@@ -33,21 +33,22 @@ public class AdminsController {
         return "admin";
     }
 
-    @PatchMapping({"/edit/{id}"})
-    public String updateUser(@ModelAttribute("user") User user, @PathVariable("id") Long id) {
-        this.userService.updateUser(id, user);
-        return "redirect:/admin";
-    }
 
-    @PostMapping
-    public String create(@ModelAttribute("user") User user) {
-        this.userService.saveUser(user);
-        return "redirect:/admin";
-    }
-
-    @DeleteMapping({"/{id}"})
-    public String delete(@PathVariable("id") Long id) {
-        this.userService.delete(id);
-        return "redirect:/admin";
-    }
+//    @PatchMapping({"/edit/{id}"})
+//    public String updateUser(@ModelAttribute("user") User user, @PathVariable("id") Long id) {
+//        this.userService.updateUser(id, user);
+//        return "redirect:/admin";
+//    }
+//
+//    @PostMapping
+//    public String create(@ModelAttribute("user") User user) {
+//        this.userService.saveUser(user);
+//        return "redirect:/admin";
+//    }
+//
+//    @DeleteMapping({"/{id}"})
+//    public String delete(@PathVariable("id") Long id) {
+//        this.userService.delete(id);
+//        return "redirect:/admin";
+//    }
 }

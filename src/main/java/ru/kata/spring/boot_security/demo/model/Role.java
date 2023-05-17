@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Objects;
@@ -59,6 +61,7 @@ public class Role implements GrantedAuthority {
         this.value = value;
     }
 
+    @Override
     public String getAuthority() {
         return this.getName();
     }
