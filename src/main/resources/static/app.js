@@ -189,9 +189,9 @@ editUserForm.addEventListener('submit', (e) => {
         },
         body: JSON.stringify(
             {
-                id: editUserForm.value,
+                id: editUserForm.ID.value,
                 firstName: firstnameEdit.value,
-                lastName: firstnameEdit.value,
+                lastName: lastnameEdit.value,
                 age: ageEdit.value,
                 email: emailEdit.value,
                 password: passwordEdit.value,
